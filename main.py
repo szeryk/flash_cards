@@ -25,7 +25,7 @@ def parse_commands(conn):
 
   words = command.split()
   if words[0] == 'help':
-    print(help)
+    print_help()
   elif words[0] == 'add':
     question = (words[1], words[2])
     database.add_question(conn, question)
