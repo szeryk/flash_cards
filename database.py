@@ -67,3 +67,13 @@ def show_questions(conn):
   rows = cur.fetchall()
   for row in rows:
     print(row)
+
+
+def get_database_questions_count(conn):
+  sql = 'SELECT Count(*) FROM questions'
+  cur = conn.cursor()
+  cur.execute(sql)
+  count = cur.fetchall()[0][0]
+
+  return count
+
