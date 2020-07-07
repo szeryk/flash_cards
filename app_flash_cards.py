@@ -1,8 +1,9 @@
-import database
+from database_manager import *
+
 
 class FlashCardsGame:
-  def __init__(self, conn):
-    self.conn = conn
+  def __init__(self, database_name):
+    self.db_manager = DatabaseManager(database_name)
     self.PROMPT = "> "
 
 
@@ -17,8 +18,36 @@ class FlashCardsGame:
            To play: play
            To clear screen: clear
            To quit: quit\n'''
-
     print(help)
+
+
+  def add_command(self, words):
+    if len(words) < 3:
+      print("Not enough arguments!")
+      return
+
+    question = (words[1], words[2])
+    self.db_manager.add_question(question)
+    self.db_manager.show_questions()
+
+
+  def delete_command(self, words):
+    if len(words) < 2:
+      print("Not enough arguments!")
+      return
+
+    self.db_manager.delete_question(int(words[1]))
+    self.db_manager.show_questions()
+
+
+  def update_command(self, words):
+    if len(words) < 4:
+      print("Not enough arguments!")
+      return
+
+    question = (words[1], words[2], words[3])
+    self.db_manager.update_question(question)
+    self.db_manager.show_questions()
 
 
   def parse_commands(self):
@@ -29,24 +58,26 @@ class FlashCardsGame:
     words = command.split()
     if words[0] == 'help':
       self.print_help()
+
     elif words[0] == 'add':
-      question = (words[1], words[2])
-      database.add_question(self.conn, question)
-      database.show_questions(self.conn)
+      self.add_command(words)
+
     elif words[0] == 'show':
-      database.show_questions(self.conn)
+      self.db_manager.show_questions()
+
     elif words[0] == 'delete':
-      database.delete_question(self.conn, int(words[1]))
-      database.show_questions(self.conn)
+      self.delete_command(words)
+
     elif words[0] == 'update':
-      question = (words[1], words[2], words[3])
-      database.update_question(self.conn, question)
-      database.show_questions(self.conn)
+      self.update_command(words)
+
     elif words[0] == 'quit':
       return False
+
     elif words[0] == 'play':
       self.play()
       self.print_help()
+
     elif words[0] == 'clear':
       for i in range(100):
         print('\n')
@@ -57,19 +88,16 @@ class FlashCardsGame:
   def play(self):
     ''' Play the flash cards game until user inputs "quit" '''
 
-    if database.get_database_questions_count(self.conn) < 1:
+    if self.db_manager.get_database_questions_count() < 1:
       print("Cannot play! No questions in database!")
       return
 
     print("I will give you a polish word, you must provide an english translation. To exit write: quit. Let's go!\n")
-    sql = 'SELECT * FROM questions ORDER BY RANDOM() LIMIT 1'
-    cur = self.conn.cursor()
     good_answers = 0
     asked_questions = 0
 
     while True:
-      cur.execute(sql)
-      row = cur.fetchall()[0]
+      row = self.db_manager.get_random_row()
       question = row[1]
       answer = row[2]
 
@@ -90,6 +118,7 @@ class FlashCardsGame:
 
 
   def run(self):
+    ''' Run application in endless loop'''
     self.print_help()
     while self.parse_commands():
       pass
