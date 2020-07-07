@@ -42,9 +42,9 @@ class DatabaseManager:
     print("Adding question: " + str(question))
     sql = ''' INSERT INTO questions(polish,english)
               VALUES(?,?) '''
-    cur = self.conn.cursor()
-    cur.execute(sql, question)
-    self.conn.commit()
+    with self.conn:
+      cur = self.conn.cursor()
+      cur.execute(sql, question)
   
   
   def update_question(self, question):
@@ -52,16 +52,16 @@ class DatabaseManager:
               SET polish = ? ,
                   english = ?
               WHERE id = ?'''
-    cur = self.conn.cursor()
-    cur.execute(sql, question)
-    self.conn.commit()
+    with self.conn:
+      cur = self.conn.cursor()
+      cur.execute(sql, question)
   
   
   def delete_question(self, id):
     sql = 'DELETE FROM questions WHERE id=?'
-    cur = self.conn.cursor()
-    cur.execute(sql, (id,))
-    self.conn.commit()
+    with self.conn:
+      cur = self.conn.cursor()
+      cur.execute(sql, (id,))
   
   
   def show_questions(self):
