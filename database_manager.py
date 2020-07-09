@@ -2,7 +2,7 @@ import sqlite3
 import os.path
 
 class DatabaseManager:
-  def __init__(self, db_file_name):
+  def __init__(self, db_file_name: str):
 
     self.db_file = db_file_name
     if not os.path.isfile(self.db_file):
@@ -16,7 +16,7 @@ class DatabaseManager:
     self.conn.close()
 
   
-  def sql_transaction(self, sql_command, *args):
+  def sql_transaction(self, sql_command: str, *args) -> None:
     with self.conn:
       try:
         cur = self.conn.cursor()
@@ -26,7 +26,7 @@ class DatabaseManager:
       return cur.fetchall()
 
 
-  def create_connection(self):
+  def create_connection(self) -> None:
     conn = None
     try:
       conn = sqlite3.connect(self.db_file)
@@ -35,7 +35,7 @@ class DatabaseManager:
     self.conn = conn
   
   
-  def create_new_questions_database(self):
+  def create_new_questions_database(self) -> None:
     sql = """ CREATE TABLE IF NOT EXISTS questions (
         id integer PRIMARY KEY,
         polish text NOT NULL,
@@ -45,13 +45,13 @@ class DatabaseManager:
     self.sql_transaction(sql)
 
   
-  def add_question(self, polish, english):
+  def add_question(self, polish: str, english: str) -> None:
     sql = ''' INSERT INTO questions(polish,english)
               VALUES(:polish,:english) '''
     self.sql_transaction(sql, {'polish': polish, 'english': english})
   
   
-  def update_question(self, id, polish, english):
+  def update_question(self, id: str, polish: str, english: str) -> None:
     sql = ''' UPDATE questions
               SET polish = :polish ,
                   english = :english
@@ -59,25 +59,25 @@ class DatabaseManager:
     self.sql_transaction(sql, {'polish': polish, 'english': english, 'id': id})
   
   
-  def delete_question(self, id):
+  def delete_question(self, id: str) -> None:
     sql = 'DELETE FROM questions WHERE id = :id'
     self.sql_transaction(sql, {'id': int(id)})
   
   
-  def show_questions(self):
+  def show_questions(self) -> None:
     sql = "SELECT * FROM questions"
     rows = self.sql_transaction(sql) 
     for row in rows:
       print(row)
   
   
-  def get_database_questions_count(self):
+  def get_database_questions_count(self) -> int:
     sql = 'SELECT Count(*) FROM questions'
     count = self.sql_transaction(sql)[0][0]
     return count
 
 
-  def get_random_question(self):
+  def get_random_question(self) -> tuple:
     sql = 'SELECT * FROM questions ORDER BY RANDOM() LIMIT 1'
     row = self.sql_transaction(sql)[0]
     return row

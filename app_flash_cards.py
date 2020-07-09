@@ -7,7 +7,7 @@ class FlashCardsGame:
     self.PROMPT = "> "
 
 
-  def print_help(self):
+  def print_help(self) -> None:
     help = '''
            What you want to do?
            To see help again: help
@@ -21,7 +21,7 @@ class FlashCardsGame:
     print(help)
 
 
-  def add_command(self, words):
+  def add_command(self, words: list) -> None:
     if len(words) < 3:
       print("Not enough arguments!")
       return
@@ -30,7 +30,7 @@ class FlashCardsGame:
     self.db_manager.show_questions()
 
 
-  def delete_command(self, words):
+  def delete_command(self, words: list) -> None:
     if len(words) < 2:
       print("Not enough arguments!")
       return
@@ -39,7 +39,7 @@ class FlashCardsGame:
     self.db_manager.show_questions()
 
 
-  def update_command(self, words):
+  def update_command(self, words: list) -> None:
     if len(words) < 4:
       print("Not enough arguments!")
       return
@@ -48,7 +48,7 @@ class FlashCardsGame:
     self.db_manager.show_questions()
 
 
-  def parse_commands(self):
+  def parse_commands(self) -> bool:
     '''Parse user commands. Return False if user wants to quit the app.'''
 
     command = input(self.PROMPT)
@@ -83,7 +83,7 @@ class FlashCardsGame:
     return True
 
 
-  def play(self):
+  def play(self) -> None:
     ''' Play the flash cards game until user inputs "quit" '''
 
     if self.db_manager.get_database_questions_count() < 1:
@@ -115,7 +115,7 @@ class FlashCardsGame:
           asked_questions += 1
 
 
-  def run(self):
+  def run(self) -> None:
     ''' Run application in endless loop'''
     self.print_help()
     while self.parse_commands():
