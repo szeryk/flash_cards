@@ -11,15 +11,23 @@ class DatabaseManager:
     else:
       self.create_connection()
 
+  
+  def sql_transaction(self, sql_command, *args):
+    with self.conn:
+      try:
+        cur = self.conn.cursor()
+        cur.execute(sql_command, *args)
+      except sqlite3.Error as e:
+        print(e)
+      return cur.fetchall()
+
 
   def create_connection(self):
     conn = None
-
     try:
       conn = sqlite3.connect(self.db_file)
     except sqlite3.Error as e:
       print(e)
-
     self.conn = conn
   
   
@@ -30,59 +38,42 @@ class DatabaseManager:
         english text NOT NULL
         ); """
     self.create_connection()
-
-    try:
-      c = self.conn.cursor()
-      c.execute(sql)
-    except sqlite3.Error as e:
-      print(e)
+    self.sql_transaction(sql)
 
   
   def add_question(self, question):
-    print("Adding question: " + str(question))
     sql = ''' INSERT INTO questions(polish,english)
-              VALUES(?,?) '''
-    with self.conn:
-      cur = self.conn.cursor()
-      cur.execute(sql, question)
+              VALUES(:polish,:english) '''
+    self.sql_transaction(sql, {'polish': question[0], 'english': question[1]})
   
   
   def update_question(self, question):
     sql = ''' UPDATE questions
-              SET polish = ? ,
-                  english = ?
-              WHERE id = ?'''
-    with self.conn:
-      cur = self.conn.cursor()
-      cur.execute(sql, question)
+              SET polish = :polish ,
+                  english = :english
+              WHERE id = :id'''
+    self.sql_transaction(sql, {'polish': question[0], 'english': question[1], 'id': question[2]})
   
   
   def delete_question(self, id):
-    sql = 'DELETE FROM questions WHERE id=?'
-    with self.conn:
-      cur = self.conn.cursor()
-      cur.execute(sql, (id,))
+    sql = 'DELETE FROM questions WHERE id = :id'
+    self.sql_transaction(sql, {'id': id})
   
   
   def show_questions(self):
-    cur = self.conn.cursor()
-    cur.execute("SELECT * FROM questions")
-    rows = cur.fetchall()
+    sql = "SELECT * FROM questions"
+    rows = self.sql_transaction(sql) 
     for row in rows:
       print(row)
   
   
   def get_database_questions_count(self):
     sql = 'SELECT Count(*) FROM questions'
-    cur = self.conn.cursor()
-    cur.execute(sql)
-    count = cur.fetchall()[0][0]
+    count = self.sql_transaction(sql)[0][0]
     return count
 
 
   def get_random_row(self):
     sql = 'SELECT * FROM questions ORDER BY RANDOM() LIMIT 1'
-    cur = self.conn.cursor()
-    cur.execute(sql)
-    row = cur.fetchall()[0]
+    row = self.sql_transaction(sql)[0]
     return row
