@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 from database_manager import *
 from app_flash_cards import *
 
