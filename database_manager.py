@@ -11,6 +11,10 @@ class DatabaseManager:
     else:
       self.create_connection()
 
+
+  def __del__(self):
+    self.conn.close()
+
   
   def sql_transaction(self, sql_command, *args):
     with self.conn:
