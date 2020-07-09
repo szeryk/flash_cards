@@ -14,7 +14,7 @@ class FlashCardsGame:
            To add a question: add polish_word english_translation
            To show your questions: show
            To delete a question: delete id
-           To update a question: update polish_word english_translation id
+           To update a question: update id polish_word english_translation
            To play: play
            To clear screen: clear
            To quit: quit\n'''
@@ -26,8 +26,7 @@ class FlashCardsGame:
       print("Not enough arguments!")
       return
 
-    question = (words[1], words[2])
-    self.db_manager.add_question(question)
+    self.db_manager.add_question(words[1], words[2])
     self.db_manager.show_questions()
 
 
@@ -36,7 +35,7 @@ class FlashCardsGame:
       print("Not enough arguments!")
       return
 
-    self.db_manager.delete_question(int(words[1]))
+    self.db_manager.delete_question(words[1])
     self.db_manager.show_questions()
 
 
@@ -45,8 +44,7 @@ class FlashCardsGame:
       print("Not enough arguments!")
       return
 
-    question = (words[1], words[2], words[3])
-    self.db_manager.update_question(question)
+    self.db_manager.update_question(words[1], words[2], words[3])
     self.db_manager.show_questions()
 
 
@@ -97,18 +95,18 @@ class FlashCardsGame:
     asked_questions = 0
 
     while True:
-      row = self.db_manager.get_random_row()
-      question = row[1]
-      answer = row[2]
+      question = self.db_manager.get_random_question()
+      polish = question[1]
+      english = question[2]
 
       while True:
-        i = input("Translate: " + question + "\n" + self.PROMPT)
-        if i == answer:
+        i = input("Translate: " + polish + "\n" + self.PROMPT)
+        if i == english:
           good_answers += 1
           asked_questions += 1
           break
         elif i == 'IamStupid':
-          print("The answer is: " + answer )
+          print("The answer is: " + english)
         elif i == 'quit':
           print("Game over :) You asked properly " + str(good_answers) + " out of " + str(asked_questions) + " questions.")
           return

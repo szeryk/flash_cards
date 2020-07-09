@@ -45,23 +45,23 @@ class DatabaseManager:
     self.sql_transaction(sql)
 
   
-  def add_question(self, question):
+  def add_question(self, polish, english):
     sql = ''' INSERT INTO questions(polish,english)
               VALUES(:polish,:english) '''
-    self.sql_transaction(sql, {'polish': question[0], 'english': question[1]})
+    self.sql_transaction(sql, {'polish': polish, 'english': english})
   
   
-  def update_question(self, question):
+  def update_question(self, id, polish, english):
     sql = ''' UPDATE questions
               SET polish = :polish ,
                   english = :english
               WHERE id = :id'''
-    self.sql_transaction(sql, {'polish': question[0], 'english': question[1], 'id': question[2]})
+    self.sql_transaction(sql, {'polish': polish, 'english': english, 'id': id})
   
   
   def delete_question(self, id):
     sql = 'DELETE FROM questions WHERE id = :id'
-    self.sql_transaction(sql, {'id': id})
+    self.sql_transaction(sql, {'id': int(id)})
   
   
   def show_questions(self):
@@ -77,7 +77,7 @@ class DatabaseManager:
     return count
 
 
-  def get_random_row(self):
+  def get_random_question(self):
     sql = 'SELECT * FROM questions ORDER BY RANDOM() LIMIT 1'
     row = self.sql_transaction(sql)[0]
     return row
