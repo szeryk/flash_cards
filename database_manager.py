@@ -56,7 +56,7 @@ class DatabaseManager:
               SET polish = :polish ,
                   english = :english
               WHERE id = :id'''
-    self.sql_transaction(sql, {'polish': polish, 'english': english, 'id': id})
+    self.sql_transaction(sql, {'polish': polish, 'english': english, 'id': int(id)})
   
   
   def delete_question(self, id: str) -> None:
