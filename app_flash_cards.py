@@ -26,7 +26,7 @@ class FlashCardsGame:
       print("Not enough arguments!")
       return
 
-    self.db_manager.add_question(words[1], words[2])
+    self.db_manager.add_question(polish=words[1], english=words[2])
 
 
   def delete_command(self, words: list) -> None:
@@ -34,7 +34,7 @@ class FlashCardsGame:
       print("Not enough arguments!")
       return
 
-    self.db_manager.delete_question(words[1])
+    self.db_manager.delete_question(id=words[1])
 
 
   def update_command(self, words: list) -> None:
@@ -42,7 +42,7 @@ class FlashCardsGame:
       print("Not enough arguments!")
       return
 
-    self.db_manager.update_question(words[1], words[2], words[3])
+    self.db_manager.update_question(id=words[1], polish=words[2], english=words[3])
 
 
   def show_command(self) -> None:
