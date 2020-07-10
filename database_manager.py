@@ -64,11 +64,10 @@ class DatabaseManager:
     self.sql_transaction(sql, {'id': int(id)})
   
   
-  def show_questions(self) -> None:
+  def get_all_questions(self) -> tuple:
     sql = "SELECT * FROM questions"
     rows = self.sql_transaction(sql) 
-    for row in rows:
-      print(row)
+    return rows
   
   
   def get_database_questions_count(self) -> int:

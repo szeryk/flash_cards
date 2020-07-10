@@ -27,7 +27,6 @@ class FlashCardsGame:
       return
 
     self.db_manager.add_question(words[1], words[2])
-    self.db_manager.show_questions()
 
 
   def delete_command(self, words: list) -> None:
@@ -36,7 +35,6 @@ class FlashCardsGame:
       return
 
     self.db_manager.delete_question(words[1])
-    self.db_manager.show_questions()
 
 
   def update_command(self, words: list) -> None:
@@ -45,7 +43,12 @@ class FlashCardsGame:
       return
 
     self.db_manager.update_question(words[1], words[2], words[3])
-    self.db_manager.show_questions()
+
+
+  def show_command(self) -> None:
+    questions = self.db_manager.get_all_questions()
+    for q in questions:
+      print(q)
 
 
   def parse_commands(self) -> bool:
@@ -59,15 +62,18 @@ class FlashCardsGame:
 
     elif words[0] == 'add':
       self.add_command(words)
+      self.show_command()
 
     elif words[0] == 'show':
-      self.db_manager.show_questions()
+      self.show_command()
 
     elif words[0] == 'delete':
       self.delete_command(words)
+      self.show_command()
 
     elif words[0] == 'update':
       self.update_command(words)
+      self.show_command()
 
     elif words[0] == 'quit':
       return False
