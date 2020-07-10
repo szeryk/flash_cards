@@ -2,7 +2,7 @@ from database_manager import *
 
 
 class FlashCardsGame:
-  def __init__(self, database_name):
+  def __init__(self, database_name: str):
     self.db_manager = DatabaseManager(database_name)
     self.PROMPT = "> "
 
@@ -51,7 +51,7 @@ class FlashCardsGame:
       print(q)
 
 
-  def parse_commands(self) -> bool:
+  def parse_user_commands(self) -> bool:
     '''Parse user commands. Return False if user wants to quit the app.'''
 
     command = input(self.PROMPT)
@@ -106,14 +106,14 @@ class FlashCardsGame:
       english = question[2]
 
       while True:
-        i = input("Translate: " + polish + "\n" + self.PROMPT)
-        if i == english:
+        user_input = input("Translate: " + polish + "\n" + self.PROMPT)
+        if user_input == english:
           good_answers += 1
           asked_questions += 1
           break
-        elif i == 'IamStupid':
+        elif user_input == 'IamStupid':
           print("The answer is: " + english)
-        elif i == 'quit':
+        elif user_input == 'quit':
           print("Game over :) You asked properly " + str(good_answers) + " out of " + str(asked_questions) + " questions.")
           return
         else:
@@ -124,5 +124,5 @@ class FlashCardsGame:
   def run(self) -> None:
     ''' Run application in endless loop'''
     self.print_help()
-    while self.parse_commands():
+    while self.parse_user_commands():
       pass
