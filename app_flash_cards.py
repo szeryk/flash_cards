@@ -92,7 +92,7 @@ class FlashCardsGame:
   def play(self) -> None:
     ''' Play the flash cards game until user inputs "quit" '''
 
-    if self.db_manager.get_database_questions_count() < 1:
+    if self.db_manager.get_questions_count() < 1:
       print("Cannot play! No questions in database!")
       return
 

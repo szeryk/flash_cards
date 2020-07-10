@@ -70,7 +70,7 @@ class DatabaseManager:
     return rows
   
   
-  def get_database_questions_count(self) -> int:
+  def get_questions_count(self) -> int:
     sql = 'SELECT Count(*) FROM questions'
     count = self.sql_transaction(sql)[0][0]
     return count
